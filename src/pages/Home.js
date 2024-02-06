@@ -5,14 +5,15 @@ import {
   signInWithPopup,
   signOut,
 } from "firebase/auth";
-import { useState } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../FirbaseContext";
 
 const Home = () => {
-  const [userInfo, setUserInfo] = useState(null);
   const auth = getAuth();
   const provider = new GoogleAuthProvider();
   const navigate = useNavigate();
+  const { user, setUser } = useContext(AuthContext);
   // ============== Google Login Start here =====================
   const handleLogin = (e) => {
     signInWithPopup(
@@ -21,8 +22,8 @@ const Home = () => {
     )
       .then((result) => {
         // The signed-in user info.
-        const user = result.user;
-        setUserInfo(user);
+        const userInfo = result.user;
+        setUser(userInfo);
       })
       .catch((error) => {
         // Handle Errors here.
@@ -36,6 +37,7 @@ const Home = () => {
       .then(() => {
         // Sign-out successful.
         alert("You have been logged out!");
+        setUser(null);
       })
       .catch((error) => {
         console.log(error);
@@ -55,7 +57,7 @@ const Home = () => {
         margin: "50px",
       }}
     >
-      {userInfo ? (
+      {user ? (
         <Box sx={{ display: "flex", gap: "50px" }}>
           <Button
             variant="contained"
